@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>首页</title>
+  <link rel="icon" type="image/x-ico" href="./images/home.png" />
+
+  <link rel="stylesheet" href="./index.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+</head>
+
+<body>
+  <div class="main">
+    <div class="diff">
+      <div class="hotTitle">
+        腾讯时间
+      </div>
+    </div>
+
+    <div class="timeBox">
+      <div class="time_box_detailinfo">
+        <div class="time_date">
+          <!-- <p>中国 china 北京 时间 </p> -->
+          <div class="ymd">
+            <p class="year_box">00</p><span>年</span>
+            <p class="month_box">00</p><span>月</span>
+            <p class="day_box">00</p><span>日</span>
+          </div>
+          <div class="hms">
+            <div>
+              <p class="hour_box">00</p><span>：</span>
+              <p class="minute_box">00</p><span>：</span>
+              <p class="seconds_box">00</p>
+            </div>
+            <!-- 时间段 -->
+            <div style="margin-left: 1.5em;">
+              <p class="someTime">某时</p>
+            </div>
+            <!-- 星期 -->
+            <div>
+              <span class="week">
+                星期</span>
+              <p class="week_box">*</p>
+            </div>
+          </div>
+          <div class="period">
+            <span>当前时间段</span>
+            <p class="period_box">时间</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hotTitle">
+      汇率
+    </div>
+
+    <div class="exchange_rate_box">
+      <!-- 固定左上角图片 -->
+      <div class="currency_top_box">
+        <img class="currencyImg" src="./images/currency.png" alt="" srcset="">
+        <div class="currencyText">
+          <span>货币兑换</span>
+          <span class="exchange_rate_txt">
+            <span class="currencyValue1">0</span>
+            <span class="currencyValue2">人民币</span>
+            =
+            <span class="currencyValue3">0</span>
+            <span class="currencyValue4">美元</span>
+          </span>
+          <span class="exchange_rate_txt">
+            <span class="currencyValue5">0</span>
+            <span class="currencyValue6">美元</span>
+            =
+            <span class="currencyValue7">0</span>
+            <span class="currencyValue8">人民币</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="currency_now">
+        当前1人民币 =
+        <span class="usd">0</span> 美元 丨
+        <span class="hkd">0</span> 港元 丨
+        <span class="jpy">0</span> 日元
+      </div>
+
+      <div class="currency_value_box">
+        <input type="text" id="currency_value" value="1">
+        <select name="" id="currency_sel_1">
+          <option value="人民币CNY">人民币CNY</option>
+          <option value="美元USD">美元USD</option>
+          <option value="港元HKD">港元HKD</option>
+          <option value="日元JPY">日元JPY</option>
+        </select>
+        <span>=</span>
+        <select name="" id="currency_sel_2">
+          <option value="人民币CNY">人民币CNY</option>
+          <option value="美元USD" selected>美元USD</option>
+          <option value="港元HKD">港元HKD</option>
+          <option value="日元JPY">日元JPY</option>
+        </select>
+        <button id="currency_convert" onclick="currency_convert()">转换</button>
+      </div>
+
+      <div class="op_exrate_tip">仅供参考，交易时以银行柜台成交价为准</div>
+    </div>
+
+
+</body>
+<script src="./index.js"></script>
+
+</html>
