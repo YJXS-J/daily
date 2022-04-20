@@ -1,0 +1,161 @@
+* {
+    margin: 0;
+    padding: 0;
+    /* 微软雅黑字体 */
+    font-family: '微软雅黑', 'Microsoft YaHei', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif';
+    box-sizing: border-box;
+}
+
+body {
+    background-color: aliceblue;
+}
+
+.main {
+    width: 80%;
+    /* height: 500px; */
+    margin: 0 auto;
+    background-color: #fff;
+}
+
+.timeBox {
+    /* width: 760px; */
+    /* height: 280px; */
+    /* background: url(./images/time_bg.png) no-repeat; */
+    background-size: 100%;
+    /* border: 1px solid #BFD9FF; */
+    border-radius: 0.28rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.hotTitle {
+    border-left: 6px solid #0083cb;
+    font-size: 0.28rem;
+    color: #333333;
+    padding-left: 16px;
+    font-weight: 800;
+    margin-bottom: 30px;
+}
+
+.time_box_detailinfo .time_date div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.time_box_detailinfo .time_date div p {
+    height: 2.4rem;
+    background: #00a5ff;
+    box-shadow: 0px 13px 24px 0px rgb(3 136 209 / 20%);
+    border-radius: 10px;
+    font-size: 0.36rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    line-height: 2.4rem;
+}
+
+.time_box_detailinfo .time_date div span {
+    font-size: 0.28rem;
+    font-weight: bold;
+    color: #3589ff;
+    display: block;
+    margin: 0 10px;
+}
+
+.year_box {
+    width: 12em;
+}
+.month_box,
+.day_box {
+    width: 6em;
+}
+
+.hour_box,
+.minute_box,
+.seconds_box,
+.week_box {
+    width: 6em;
+}
+
+.someTime,
+.period_box {
+    width: 6.5em;
+}
+
+.week {
+    width: 6em !important;
+    float: right;
+}
+
+.ymd,
+.hms {
+    margin-bottom: 1em;
+}
+
+.ymd span {
+    width: 1.5em;
+}
+
+.hms span {
+    width: 1em;
+}
+
+.exchange_rate_box {
+    width: 518px;
+    padding: 10px;
+}
+
+.currency_top_box {
+    display: flex;
+}
+
+.currencyText {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-evenly;
+    margin-left: 0.5em;
+}
+
+.currencyImg {
+    width: 72px;
+}
+
+.exchange_rate_txt {
+    font-weight: bold;
+}
+
+.currency_now,
+.currency_value_box {
+    margin: 1em 0;
+}
+
+#currency_value {
+    width: 92px;
+    outline: none;
+}
+
+select,
+input,
+button {
+    width: 100px;
+    height: 36px;
+}
+
+button {
+    background: #00a5ff;
+    border: transparent;
+    box-shadow: 0px 13px 24px 0px rgb(3 136 209 / 20%);
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+}
+
+.op_exrate_tip {
+    color: #666;
+    font-size: 0.8em;
+}
