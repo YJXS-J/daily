@@ -271,7 +271,7 @@ function currency_echarts() {
     // 计时器动态更新;
     var xAxisData = [];
     var seriesData = [];
-    function currency_echarts_now() {
+    function currency_echarts_now(fromCode, toCode) {
         $.ajax({
             // 获取时间(腾讯)
             type: 'GET',
@@ -295,9 +295,9 @@ function currency_echarts() {
             type: 'GET',
             url:
                 'https://api.it120.cc/gooking/forex/rate?fromCode=' +
-                'JPY' +
+                fromCode +
                 '&toCode=' +
-                'CNY' +
+                toCode +
                 '',
             dataType: 'json',
             success: function (data) {
@@ -324,9 +324,9 @@ function currency_echarts() {
             },
         });
     }
-    currency_echarts_now();
+    currency_echarts_now('JPY', 'CNY');
     setInterval(() => {
-        currency_echarts_now();
+        currency_echarts_now('JPY', 'CNY');
     }, 2000);
 }
 currency_echarts();
