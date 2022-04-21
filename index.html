@@ -97,14 +97,14 @@
 
         <div class="currency_value_box">
           <input type="text" id="currency_value" value="1">
-          <select name="" id="currency_sel_1">
+          <select name="" class="currency_sel" id="currency_sel_1">
             <option value="人民币CNY">人民币CNY</option>
             <option value="美元USD">美元USD</option>
             <option value="港元HKD">港元HKD</option>
             <option value="日元JPY">日元JPY</option>
           </select>
           <span>=</span>
-          <select name="" id="currency_sel_2">
+          <select name="" class="currency_sel" id="currency_sel_2">
             <option value="人民币CNY">人民币CNY</option>
             <option value="美元USD" selected>美元USD</option>
             <option value="港元HKD">港元HKD</option>
@@ -112,7 +112,7 @@
           </select>
           <button id="currency_convert" onclick="currency_convert()">转换</button>
         </div>
-
+        <div class="tip">请选择不同的货币单位</div>
         <div class="op_exrate_tip">仅供参考，交易时以银行柜台成交价为准</div>
 
         <div style="margin: 1em 0;">

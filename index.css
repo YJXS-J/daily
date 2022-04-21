@@ -146,6 +146,12 @@ body {
     outline: none;
 }
 
+.tip {
+    color: red;
+    display: none;
+    font-size: 0.24em;
+}
+
 button {
     width: 6em;
     height: 21px;

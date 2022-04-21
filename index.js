@@ -144,16 +144,24 @@ setInterval(function () {
 // 默认汇率转换值接口
 function defaultCurrencyConversion() {
     // 获取输入框的值
-    var currency_value = $('#currency_value').val();
+    var currency_value = 1;
     // 获取下拉框的值
-    var currency_sel_1 = $('#currency_sel_1').val();
-    var currency_sel_2 = $('#currency_sel_2').val();
+    var currency_sel_1 = '人民币CNY';
+    var currency_sel_2 = '美元USD';
     exchangeRate2(currency_sel_2, currency_sel_1, currency_value);
 }
 
 // 点击转换货币
 function currency_convert() {
-    defaultCurrencyConversion();
+    if ($('#currency_sel_1').val() == $('#currency_sel_2').val()) {
+        return;
+    }
+    // 获取输入框的值
+    var currency_value = $('#currency_value').val();
+    // 获取下拉框的值
+    var currency_sel_1 = $('#currency_sel_1').val();
+    var currency_sel_2 = $('#currency_sel_2').val();
+    exchangeRate2(currency_sel_2, currency_sel_1, currency_value);
 }
 
 // 汇率接口
@@ -173,7 +181,9 @@ function exchangeRate2(fromCode, toCode, value) {
                 $('.currencyValue2').html(toCode.slice(0, -3));
                 $('.currencyValue4').html(fromCode.slice(0, -3));
                 $('.currencyValue1').html(value);
-                $('.currencyValue3').html(data.data.rate * Number($('#currency_value').val()));
+                $('.currencyValue3').html(
+                    (data.data.rate * Number($('#currency_value').val())).toFixed(4)
+                );
 
                 $('.currencyValue8').html(toCode.slice(0, -3));
                 $('.currencyValue6').html(fromCode.slice(0, -3));
@@ -184,7 +194,6 @@ function exchangeRate2(fromCode, toCode, value) {
                         Number($('#currency_value').val())
                     ).toFixed(4)
                 );
-                console.log(data.data);
             } else {
                 // console.log('当前访问用户较多，请稍后再试');
             }
@@ -197,6 +206,16 @@ tencentTime();
 
 // 初始化货币转换
 defaultCurrencyConversion();
+
+// 货币选项判断
+$('.currency_sel').change(function () {
+    console.log(1);
+    if ($('#currency_sel_1').val() == $('#currency_sel_2').val()) {
+        $('.tip').css('display', 'block');
+    } else {
+        $('.tip').css('display', 'none');
+    }
+});
 
 // 初始化汇率Echarts
 var currency_echarts_value1 = 'JPY';
