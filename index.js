@@ -180,7 +180,7 @@ function exchangeRate2(fromCode, toCode, value) {
                 $('.currencyValue5').html(value);
                 $('.currencyValue7').html((data.data.fromCode / data.data.toCode).toFixed(4));
             } else {
-                console.log('当前访问用户较多，请稍后再试');
+                // console.log('当前访问用户较多，请稍后再试');
             }
         },
     });
@@ -198,3 +198,178 @@ var setDef = setInterval(function () {
         clearInterval(setDef);
     }
 }, 1000);
+
+// 汇率Echarts
+function currency_echarts() {
+    // 基于准备好的dom，初始化echarts实例
+    var currency_echarts = document.getElementById('currency_echarts');
+    // 在容器中初始化图表实例
+    var currencyChart = echarts.init(currency_echarts);
+    // 设置图表配置和数据
+    currencyChart.setOption({
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+                return [pt[0], '10%'];
+            },
+            confine: true,
+        },
+        grid: {
+            top: '8%',
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true,
+        },
+        xAxis: {
+            type: 'category',
+            data: [],
+        },
+        yAxis: {
+            type: 'value',
+        },
+        series: [
+            {
+                data: [],
+                name: '日元',
+                type: 'line',
+                areaStyle: {},
+                // symbol: 'none',
+                // sampling: 'lttb',
+                // itemStyle: {
+                //     color: 'rgb(180, 211, 246)',
+                // },
+                // areaStyle: {
+                //     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                //         {
+                //             offset: 0,
+                //             color: 'rgb(113, 161, 255)',
+                //         },
+                //         {
+                //             offset: 1,
+                //             color: 'rgb(56, 238, 255)',
+                //         },
+                //     ]),
+                // },
+                // 修改颜色
+                itemStyle: {
+                    color: 'rgb(65, 207, 255)',
+                },
+            },
+        ],
+        dataZoom: [
+            {
+                xAxisIndex: 0, //这里是从X轴的0刻度开始
+                show: false, //是否显示滑动条，不影响使用
+                type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
+                startValue: 0, // 从头开始。
+                endValue: 7, // 一次性展示6个
+                height: 8, //组件高度
+                bottom: 10,
+                borderColor: 'rgba(43,48,67,.1)',
+                fillerColor: 'rgb(36,71,141)',
+                zoomLock: true,
+                showDataShadow: false, //是否显示数据阴影 默认auto
+                backgroundColor: '#051A3B',
+                showDetail: false, //即拖拽时候是否显示详细数值信息 默认true
+                realtime: true, //是否实时更新
+                filterMode: 'filter',
+                handleIcon:
+                    'M-9.35,34.56V42m0-40V9.5m-2,0h4a2,2,0,0,1,2,2v21a2,2,0,0,1-2,2h-4a2,2,0,0,1-2-2v-21A2,2,0,0,1-11.35,9.5Z',
+                handleStyle: {
+                    color: 'rgb(36,71,141)',
+                    borderColor: 'rgb(36,71,141)',
+                },
+                moveHandleSize: 20,
+                moveOnMouseMove: true,
+                maxValueSpan: 7,
+                minValueSpan: 7,
+                moveHandleSize: 0,
+                brushSelect: false, //刷选功能，设为false可以防止拖动条长度改变 ************（这是一个坑）
+            },
+        ],
+    });
+    // 计时器动态更新;
+    var xAxisData = [];
+    var seriesData = [];
+    function currency_echarts_now() {
+        $.ajax({
+            // 获取时间(腾讯)
+            type: 'GET',
+            url: 'http://vv.video.qq.com/checktime?otype=json',
+            dataType: 'jsonp',
+            success: function (data) {
+                var date = new Date(data.t * 1000);
+                var h = ('0' + date.getHours()).slice(-2);
+                var m = ('0' + date.getMinutes()).slice(-2);
+                xAxisData.push(h + ':' + m);
+                currencyChart.setOption({
+                    xAxis: [
+                        {
+                            data: xAxisData,
+                        },
+                    ],
+                });
+            },
+        });
+        $.ajax({
+            type: 'GET',
+            url:
+                'https://api.it120.cc/gooking/forex/rate?fromCode=' +
+                'JPY' +
+                '&toCode=' +
+                'CNY' +
+                '',
+            dataType: 'json',
+            success: function (data) {
+                if (data.data) {
+                    // 汇率计算
+                    seriesData.push(data.data.rate);
+                    currencyChart.setOption({
+                        series: [
+                            {
+                                data: seriesData,
+                            },
+                        ],
+                    });
+                } else {
+                    seriesData.push(0);
+                    currencyChart.setOption({
+                        series: [
+                            {
+                                data: seriesData,
+                            },
+                        ],
+                    });
+                }
+            },
+        });
+    }
+    currency_echarts_now();
+    setInterval(() => {
+        currency_echarts_now();
+    }, 2000);
+}
+currency_echarts();
+
+// var xAxisData = [];
+// var seriesData = [];
+// var seriesName = '日元';
+
+// // 获取时间插入到echarts
+// function getTencentTime() {
+//     $.ajax({
+//         // 获取时间(腾讯)
+//         type: 'GET',
+//         url: 'http://vv.video.qq.com/checktime?otype=json',
+//         dataType: 'jsonp',
+//         success: function (data) {
+//             var date = new Date(data.t * 1000);
+//             var h = ('0' + date.getHours()).slice(-2);
+//             var m = ('0' + date.getMinutes()).slice(-2);
+//             xAxisData.push(h + ':' + m);
+//         },
+//     });
+// }
+
+// currency_echarts(xAxisData, seriesData, seriesName);

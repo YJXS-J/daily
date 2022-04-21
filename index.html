@@ -9,7 +9,8 @@
   <link rel="icon" type="image/x-ico" href="./images/home.png" />
 
   <link rel="stylesheet" href="./index.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="./js/jquery-3.6.0.min.js"></script>
+  <script src="./js/echarts.min.js"></script>
 
 </head>
 
@@ -84,11 +85,8 @@
 
       <div class="currency_now">
         当前1人民币 =
-        <br>
         <span class="usd">0</span> 美元 丨
-        <br>
         <span class="hkd">0</span> 港元 丨
-        <br>
         <span class="jpy">0</span> 日元
       </div>
 
@@ -111,6 +109,8 @@
       </div>
 
       <div class="op_exrate_tip">仅供参考，交易时以银行柜台成交价为准</div>
+
+      <div id="currency_echarts"></div>
     </div>
 
 
