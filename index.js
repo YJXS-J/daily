@@ -259,33 +259,12 @@ function currency_echarts() {
         ],
         dataZoom: [
             {
-                xAxisIndex: 0, //这里是从X轴的0刻度开始
-                show: false, //是否显示滑动条，不影响使用
-                type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
-                startValue: 0, // 从头开始。
-                endValue: 7, // 一次性展示6个
-                height: 8, //组件高度
-                bottom: 10,
-                borderColor: 'rgba(43,48,67,.1)',
-                fillerColor: 'rgb(36,71,141)',
-                zoomLock: true,
-                showDataShadow: false, //是否显示数据阴影 默认auto
-                backgroundColor: '#051A3B',
-                showDetail: false, //即拖拽时候是否显示详细数值信息 默认true
-                realtime: true, //是否实时更新
-                filterMode: 'filter',
-                handleIcon:
-                    'M-9.35,34.56V42m0-40V9.5m-2,0h4a2,2,0,0,1,2,2v21a2,2,0,0,1-2,2h-4a2,2,0,0,1-2-2v-21A2,2,0,0,1-11.35,9.5Z',
-                handleStyle: {
-                    color: 'rgb(36,71,141)',
-                    borderColor: 'rgb(36,71,141)',
-                },
-                moveHandleSize: 20,
-                moveOnMouseMove: true,
-                maxValueSpan: 7,
-                minValueSpan: 7,
-                moveHandleSize: 0,
-                brushSelect: false, //刷选功能，设为false可以防止拖动条长度改变 ************（这是一个坑）
+                type: 'inside', // 支持内部鼠标滚动平移
+                start: 20,
+                end: 80,
+                zoomOnMouseWheel: false, // 关闭滚轮缩放
+                moveOnMouseWheel: true, // 开启滚轮平移
+                moveOnMouseMove: true, // 鼠标移动能触发数据窗口平移
             },
         ],
     });
