@@ -148,8 +148,6 @@ function defaultCurrencyConversion() {
     // 获取下拉框的值
     var currency_sel_1 = $('#currency_sel_1').val();
     var currency_sel_2 = $('#currency_sel_2').val();
-
-    console.log(currency_sel_2, currency_sel_1, currency_value);
     exchangeRate2(currency_sel_2, currency_sel_1, currency_value);
 }
 
@@ -182,7 +180,7 @@ function exchangeRate2(fromCode, toCode, value) {
                 $('.currencyValue5').html(value);
                 $('.currencyValue7').html((data.data.fromCode / data.data.toCode).toFixed(4));
             } else {
-                alert('当前访问用户较多，请稍后再试');
+                console.log('当前访问用户较多，请稍后再试');
             }
         },
     });
@@ -193,3 +191,10 @@ tencentTime();
 
 // 初始化货币转换
 defaultCurrencyConversion();
+
+var setDef = setInterval(function () {
+    defaultCurrencyConversion();
+    if ($('.currencyValue1').html() != '0') {
+        clearInterval(setDef);
+    }
+}, 1000);

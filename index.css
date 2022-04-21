@@ -8,23 +8,17 @@
 
 body {
     background-color: aliceblue;
+    padding: 1em;
 }
 
 .main {
-    width: 90%;
-    /* height: 500px; */
     margin: 0 auto;
     background-color: #fff;
+    padding: 1em;
 }
 
 .timeBox {
-    /* width: 760px; */
-    /* height: 280px; */
-    /* background: url(./images/time_bg.png) no-repeat; */
     background-size: 100%;
-    /* border: 1px solid #BFD9FF; */
-    border-radius: 0.28rem;
-    display: flex;
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
@@ -116,7 +110,7 @@ body {
     display: flex;
     flex-flow: column;
     justify-content: space-evenly;
-    margin-left: 0.5em;
+    margin-left: 1em;
 }
 
 .currencyImg {
