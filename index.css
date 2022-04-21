@@ -13,8 +13,17 @@ body {
 
 .main {
     margin: 0 auto;
-    background-color: #fff;
+    /* background-color: #fff; */
+    /* padding: 1em; */
+}
+
+#time,
+#currency_div {
     padding: 1em;
+    background: #fff;
+    margin-bottom: 1em;
+    border-radius: 0.8em;
+    box-shadow: 0px 13px 24px 0px rgb(3 136 209 / 20%);
 }
 
 .timeBox {
@@ -30,7 +39,7 @@ body {
     color: #333333;
     padding-left: 16px;
     font-weight: 800;
-    margin: 4.8em 0;
+    margin-bottom: 4.8em;
 }
 
 .time_box_detailinfo .time_date div {
@@ -99,7 +108,7 @@ body {
 
 .exchange_rate_box {
     /* width: 518px; */
-    padding: 10px;
+    /* padding: 10px; */
 }
 
 .currency_top_box {

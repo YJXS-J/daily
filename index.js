@@ -3,7 +3,7 @@ function tencentTime() {
     $.ajax({
         // 获取时间(腾讯)
         type: 'GET',
-        url: 'http://vv.video.qq.com/checktime?otype=json',
+        url: 'https://vv.video.qq.com/checktime?otype=json',
         dataType: 'jsonp',
         success: function (data) {
             getTime(data.t);
@@ -173,12 +173,18 @@ function exchangeRate2(fromCode, toCode, value) {
                 $('.currencyValue2').html(toCode.slice(0, -3));
                 $('.currencyValue4').html(fromCode.slice(0, -3));
                 $('.currencyValue1').html(value);
-                $('.currencyValue3').html(data.data.rate);
+                $('.currencyValue3').html(data.data.rate * Number($('#currency_value').val()));
 
                 $('.currencyValue8').html(toCode.slice(0, -3));
                 $('.currencyValue6').html(fromCode.slice(0, -3));
                 $('.currencyValue5').html(value);
-                $('.currencyValue7').html((data.data.fromCode / data.data.toCode).toFixed(4));
+                $('.currencyValue7').html(
+                    (
+                        (data.data.fromCode / data.data.toCode) *
+                        Number($('#currency_value').val())
+                    ).toFixed(4)
+                );
+                console.log(data.data);
             } else {
                 // console.log('当前访问用户较多，请稍后再试');
             }
