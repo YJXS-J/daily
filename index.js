@@ -141,7 +141,7 @@ setInterval(function () {
     }
 }, 5000);
 
-// 初始化汇率转换值
+// 默认汇率转换值接口
 function defaultCurrencyConversion() {
     // 获取输入框的值
     var currency_value = $('#currency_value').val();
@@ -192,6 +192,12 @@ tencentTime();
 // 初始化货币转换
 defaultCurrencyConversion();
 
+// 初始化汇率Echarts
+var currency_echarts_value1 = 'JPY';
+var currency_echarts_value2 = '日元';
+currency_echarts(currency_echarts_value1, currency_echarts_value2);
+
+// 初始化默认汇率
 var setDef = setInterval(function () {
     defaultCurrencyConversion();
     if ($('.currencyValue1').html() != '0') {
@@ -200,7 +206,7 @@ var setDef = setInterval(function () {
 }, 1000);
 
 // 汇率Echarts
-function currency_echarts() {
+function currency_echarts(fromCode, seriesName) {
     // 基于准备好的dom，初始化echarts实例
     var currency_echarts = document.getElementById('currency_echarts');
     // 在容器中初始化图表实例
@@ -231,7 +237,7 @@ function currency_echarts() {
         series: [
             {
                 data: [],
-                name: '日元',
+                name: seriesName,
                 type: 'line',
                 areaStyle: {},
                 // symbol: 'none',
@@ -271,7 +277,7 @@ function currency_echarts() {
     // 计时器动态更新;
     var xAxisData = [];
     var seriesData = [];
-    function currency_echarts_now(fromCode, toCode) {
+    function currency_echarts_now() {
         $.ajax({
             // 获取时间(腾讯)
             type: 'GET',
@@ -294,11 +300,7 @@ function currency_echarts() {
         $.ajax({
             type: 'GET',
             url:
-                'https://api.it120.cc/gooking/forex/rate?fromCode=' +
-                fromCode +
-                '&toCode=' +
-                toCode +
-                '',
+                'https://api.it120.cc/gooking/forex/rate?fromCode=' + fromCode + '&toCode=CNY' + '',
             dataType: 'json',
             success: function (data) {
                 if (data.data) {
@@ -324,31 +326,15 @@ function currency_echarts() {
             },
         });
     }
-    currency_echarts_now('JPY', 'CNY');
+    currency_echarts_now();
     setInterval(() => {
-        currency_echarts_now('JPY', 'CNY');
-    }, 2000);
+        currency_echarts_now();
+    }, 60000);
 }
-currency_echarts();
 
-// var xAxisData = [];
-// var seriesData = [];
-// var seriesName = '日元';
-
-// // 获取时间插入到echarts
-// function getTencentTime() {
-//     $.ajax({
-//         // 获取时间(腾讯)
-//         type: 'GET',
-//         url: 'http://vv.video.qq.com/checktime?otype=json',
-//         dataType: 'jsonp',
-//         success: function (data) {
-//             var date = new Date(data.t * 1000);
-//             var h = ('0' + date.getHours()).slice(-2);
-//             var m = ('0' + date.getMinutes()).slice(-2);
-//             xAxisData.push(h + ':' + m);
-//         },
-//     });
-// }
-
-// currency_echarts(xAxisData, seriesData, seriesName);
+// echarts目标汇率转换
+$('#currency_sel_3').change(function () {
+    currency_echarts_value1 = $(this).children('option:selected').val().slice(-3);
+    currency_echarts_value2 = $(this).children('option:selected').val().slice(0, -3);
+    currency_echarts(currency_echarts_value1, currency_echarts_value2);
+});
