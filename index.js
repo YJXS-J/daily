@@ -71,19 +71,19 @@ function getTime(time) {
     $('.someTime').html(someTime);
 
     var period_box =
-        h >= 0 || h < 3
+        h >= 0 && h < 3
             ? '拂晓'
-            : h >= 3 || h < 6
+            : h >= 3 && h < 6
             ? '黎明'
-            : h >= 6 || h < 9
+            : h >= 6 && h < 9
             ? '早晨'
-            : h >= 9 || h < 12
+            : h >= 9 && h < 12
             ? '上午'
-            : h >= 12 || h < 15
+            : h >= 12 && h < 15
             ? '中午'
-            : h >= 15 || h < 18
+            : h >= 15 && h < 18
             ? '下午'
-            : h >= 18 || h < 21
+            : h >= 18 && h < 21
             ? '晚上'
             : '夜晚';
     $('.period_box').html(period_box);
@@ -93,9 +93,6 @@ function getTime(time) {
         $('.period_box').css('background', '#00A5FF');
     }
 }
-
-// 初始化时间
-tencentTime();
 
 // 时间每秒加载一次
 setInterval(function () {
@@ -155,8 +152,6 @@ function defaultCurrencyConversion() {
     console.log(currency_sel_2, currency_sel_1, currency_value);
     exchangeRate2(currency_sel_2, currency_sel_1, currency_value);
 }
-// 初始化货币转换
-defaultCurrencyConversion();
 
 // 点击转换货币
 function currency_convert() {
@@ -192,3 +187,9 @@ function exchangeRate2(fromCode, toCode, value) {
         },
     });
 }
+
+// 初始化时间
+tencentTime();
+
+// 初始化货币转换
+defaultCurrencyConversion();
