@@ -1,3 +1,17 @@
+// 全局变量
+var globalH; // 小时
+var globaltemperature; // 温度
+var globalweather; // 今天天气
+var globalwinddirection; // 风向
+var globalwindpower; // 风力
+var globalhumidity; // 湿度
+var globalreporttime; // 更新时间
+var cityCode = '440300'; // 深圳市
+var globaldayweather; //白天天气现象
+var globaldaytemp; //白天温度
+var globaldaywind; //白天风向
+var globaldaypower; //白天风力
+
 // 获取腾讯时间
 function tencentTime() {
     $.ajax({
@@ -21,6 +35,7 @@ function getTime(time) {
     var h = ('0' + date.getHours()).slice(-2);
     var m = ('0' + date.getMinutes()).slice(-2);
     var s = ('0' + date.getSeconds()).slice(-2);
+    globalH = h;
     var w = date.getDay();
     // 显示时间
     $('.year_box').text(Y);
@@ -236,6 +251,14 @@ function currency_echarts(fromCode, seriesName) {
     var currency_echarts = document.getElementById('currency_echarts');
     // 在容器中初始化图表实例
     var currencyChart = echarts.init(currency_echarts);
+
+    currencyChart.showLoading({
+        text: '加载中...', //加载时候的文本
+        color: '#00a5ff', //加载时候小圆圈的颜色
+        textColor: '#00a5ff', //加载时候文本颜色
+        // maskColor: '#082042', //加载时候的背景颜色
+    });
+
     // 设置图表配置和数据
     currencyChart.setOption({
         tooltip: {
@@ -314,6 +337,7 @@ function currency_echarts(fromCode, seriesName) {
                     seriesDataStatus = true;
                     // 汇率计算
                     seriesData.push(data.data.rate);
+
                     currencyChart.setOption({
                         series: [
                             {
@@ -333,6 +357,7 @@ function currency_echarts(fromCode, seriesName) {
                 url: 'http://vv.video.qq.com/checktime?otype=json',
                 dataType: 'jsonp',
                 success: function (data) {
+                    clearTimeout(currency_echarts_timer);
                     var date = new Date(data.t * 1000);
                     var h = ('0' + date.getHours()).slice(-2);
                     var m = ('0' + date.getMinutes()).slice(-2);
@@ -344,14 +369,18 @@ function currency_echarts(fromCode, seriesName) {
                             },
                         ],
                     });
+                    currencyChart.hideLoading();
                 },
             });
         }
     }
+    var currency_echarts_timer = setInterval(function () {
+        currency_echarts_now();
+    }, 1000);
     currency_echarts_now();
     setInterval(() => {
         currency_echarts_now();
-    }, 3000);
+    }, 60000);
 }
 
 // echarts目标汇率转换
@@ -362,16 +391,13 @@ $('#currency_sel_3').change(function () {
 });
 
 // 天气
-var cityCode = '440300'; // 深圳市
 function weatherFn(cityCode) {
     var key = '3c63ae331c3c5b812a328d3b6fb26a4c';
     $.ajax({
-        // 获取时间(腾讯)
         type: 'GET',
         url: 'https://restapi.amap.com/v3/weather/weatherInfo?key=' + key + '&city=' + cityCode,
         dataType: 'JSON',
         success: function (data) {
-            console.log(data);
             var weather = data.lives[0];
             $('.temperature').html(weather.temperature);
             $('.weather').html(weather.weather);
@@ -379,7 +405,92 @@ function weatherFn(cityCode) {
             $('.windpower').html(weather.windpower);
             $('.humidity').html(weather.humidity);
             $('.reporttime').html(weather.reporttime);
+
+            globaltemperature = weather.temperature;
+            globalweather = weather.weather;
+            globalwinddirection = weather.winddirection;
+            globalwindpower = weather.windpower;
+            globalhumidity = weather.humidity;
+            globalreporttime = weather.reporttime;
         },
     });
 }
 weatherFn(cityCode);
+
+// 天气邮件（今天）
+var weatherEmailToday = setInterval(() => {
+    if (globalH == '07') {
+        weatherFn(cityCode);
+        sendEmail(
+            '今日天气信息',
+            `今天天气：${globalweather}，温度：${globaltemperature}℃，风向：${globalwinddirection}，风力：${globalwindpower}，湿度：${globalhumidity}，更新时间：${globalreporttime}`
+        );
+        clearTimeout(weatherEmailToday);
+    }
+}, 10000);
+
+// 天气邮件（明天）
+var weatherEmailTomorrow = setInterval(() => {
+    if (globalH == '20') {
+        weatherAllFn(cityCode);
+        sendEmail(
+            '明日白天天气信息',
+            `明日白天天气：${globalweather}，温度：${globaltemperature}℃，风向：${globalwinddirection}，风力：${globalwindpower}`
+        );
+        clearTimeout(weatherEmailTomorrow);
+    }
+}, 10000);
+
+// 明日天气
+function weatherAllFn(cityCode) {
+    var key = '3c63ae331c3c5b812a328d3b6fb26a4c';
+    $.ajax({
+        // 获取时间(腾讯)
+        type: 'GET',
+        url:
+            'https://restapi.amap.com/v3/weather/weatherInfo?key=' +
+            key +
+            '&city=' +
+            cityCode +
+            '&extensions=all',
+        dataType: 'JSON',
+        success: function (data) {
+            var weatherT = data.forecasts[0].casts[1];
+            $('.dayweather').html(weatherT.dayweather);
+            $('.daytemp').html(weatherT.daytemp);
+            $('.daywind').html(weatherT.daywind);
+            $('.daypower').html(weatherT.daypower);
+
+            $('.nightweather').html(weatherT.nightweather);
+            $('.nighttemp').html(weatherT.nighttemp);
+            $('.nightwind').html(weatherT.nightwind);
+            $('.nightpower').html(weatherT.nightpower);
+
+            globaldayweather = weatherT.dayweather;
+            globaldaytemp = weatherT.daytemp;
+            globaldaywind = weatherT.daywind;
+            globaldaypower = weatherT.daypower;
+        },
+    });
+}
+weatherAllFn(cityCode);
+
+// 发送邮件
+(function () {
+    emailjs.init('ePaLzW855uk89BTeb');
+})();
+var msg = '';
+function sendEmail(title, msg) {
+    var templateParams = {
+        title: title,
+        msg: msg,
+    };
+    emailjs.send('service_tejlxpc', 'template_aj1y406', templateParams).then(
+        function (response) {
+            console.log('SUCCESS!', response.status, response.text);
+        },
+        function (error) {
+            console.log('FAILED...', error);
+        }
+    );
+}

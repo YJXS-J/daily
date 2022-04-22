@@ -204,3 +204,36 @@ button {
     flex-flow: column;
     justify-content: space-between;
 }
+
+.splitLine {
+    width: 100%;
+    background-color: #0083cb;
+    margin: 1em 0;
+}
+.weather_tomorrow_box {
+    display: flex;
+    justify-content: space-between;
+}
+
+.weather_tomorrow_box:first-child {
+    margin-bottom: 0.5em;
+}
+
+.weather_tomorrow span {
+    display: inline-block;
+}
+
+.daytime {
+    color: #0d789c;
+}
+
+.night {
+    color: #9121db;
+}
+
+.hotTitle2 {
+    font-size: 1rem;
+    color: #000;
+    font-weight: 800;
+    margin-bottom: 1em;
+}

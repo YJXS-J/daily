@@ -131,6 +131,7 @@
       <div class="hotTitle">
         高德天气
       </div>
+      <!-- 今日天气 -->
       <div class="weather_box">
         <!-- 左 -->
         <div class="weather_box_left">
@@ -155,13 +156,36 @@
         </div>
 
       </div>
-
-
+      <!-- 分割线 -->
+      <hr class="splitLine">
+      </hr>
+      <!-- 明日天气 -->
+      <div class="hotTitle2">
+        明天天气
+      </div>
+      <div class="weather_tomorrow">
+        <div class="weather_tomorrow_box">
+          <span class="daytime">白天天气信息：</span>
+          <span class="dayweather">白天天气现象</span>
+          <span><span class="daytemp">白天温度</span>℃</span>
+          <span><span class="daywind">白天风向</span>风</span>
+          <span><span class="daypower">白天风力</span>级</span>
+        </div>
+        <div class="weather_tomorrow_box">
+          <span class="night">晚上天气信息：</span>
+          <span class="nightweather">晚上天气现象</span>
+          <span><span class="nighttemp">晚上温度</span>℃</span>
+          <span><span class="nightwind">晚上风向</span>风</span>
+          <span><span class="nightpower">晚上风力</span>级</span>
+        </div>
+      </div>
     </div>
   </div>
   </div>
 
 </body>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js">
+</script>
 <script src="./index.js"></script>
 
 </html>
