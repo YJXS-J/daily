@@ -302,26 +302,8 @@ function currency_echarts(fromCode, seriesName) {
     // 计时器动态更新;
     var xAxisData = [];
     var seriesData = [];
+    var seriesDataStatus = false;
     function currency_echarts_now() {
-        $.ajax({
-            // 获取时间(腾讯)
-            type: 'GET',
-            url: 'http://vv.video.qq.com/checktime?otype=json',
-            dataType: 'jsonp',
-            success: function (data) {
-                var date = new Date(data.t * 1000);
-                var h = ('0' + date.getHours()).slice(-2);
-                var m = ('0' + date.getMinutes()).slice(-2);
-                xAxisData.push(h + ':' + m);
-                currencyChart.setOption({
-                    xAxis: [
-                        {
-                            data: xAxisData,
-                        },
-                    ],
-                });
-            },
-        });
         $.ajax({
             type: 'GET',
             url:
@@ -329,6 +311,7 @@ function currency_echarts(fromCode, seriesName) {
             dataType: 'json',
             success: function (data) {
                 if (data.data) {
+                    seriesDataStatus = true;
                     // 汇率计算
                     seriesData.push(data.data.rate);
                     currencyChart.setOption({
@@ -339,22 +322,36 @@ function currency_echarts(fromCode, seriesName) {
                         ],
                     });
                 } else {
-                    seriesData.push(0);
-                    currencyChart.setOption({
-                        series: [
-                            {
-                                data: seriesData,
-                            },
-                        ],
-                    });
+                    seriesDataStatus = false;
                 }
             },
         });
+        if (seriesDataStatus) {
+            $.ajax({
+                // 获取时间(腾讯)
+                type: 'GET',
+                url: 'http://vv.video.qq.com/checktime?otype=json',
+                dataType: 'jsonp',
+                success: function (data) {
+                    var date = new Date(data.t * 1000);
+                    var h = ('0' + date.getHours()).slice(-2);
+                    var m = ('0' + date.getMinutes()).slice(-2);
+                    xAxisData.push(h + ':' + m);
+                    currencyChart.setOption({
+                        xAxis: [
+                            {
+                                data: xAxisData,
+                            },
+                        ],
+                    });
+                },
+            });
+        }
     }
     currency_echarts_now();
     setInterval(() => {
         currency_echarts_now();
-    }, 60000);
+    }, 3000);
 }
 
 // echarts目标汇率转换
@@ -363,3 +360,26 @@ $('#currency_sel_3').change(function () {
     currency_echarts_value2 = $(this).children('option:selected').val().slice(0, -3);
     currency_echarts(currency_echarts_value1, currency_echarts_value2);
 });
+
+// 天气
+var cityCode = '440300'; // 深圳市
+function weatherFn(cityCode) {
+    var key = '3c63ae331c3c5b812a328d3b6fb26a4c';
+    $.ajax({
+        // 获取时间(腾讯)
+        type: 'GET',
+        url: 'https://restapi.amap.com/v3/weather/weatherInfo?key=' + key + '&city=' + cityCode,
+        dataType: 'JSON',
+        success: function (data) {
+            console.log(data);
+            var weather = data.lives[0];
+            $('.temperature').html(weather.temperature);
+            $('.weather').html(weather.weather);
+            $('.winddirection').html(weather.winddirection);
+            $('.windpower').html(weather.windpower);
+            $('.humidity').html(weather.humidity);
+            $('.reporttime').html(weather.reporttime);
+        },
+    });
+}
+weatherFn(cityCode);

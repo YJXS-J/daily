@@ -103,7 +103,7 @@
             <option value="港元HKD">港元HKD</option>
             <option value="日元JPY">日元JPY</option>
           </select>
-          <span>=</span>
+          <img class="convert_png" src="./images/convert.png" alt="">
           <select name="" class="currency_sel" id="currency_sel_2">
             <option value="人民币CNY">人民币CNY</option>
             <option value="美元USD" selected>美元USD</option>
@@ -127,7 +127,39 @@
       </div>
     </div>
     <!-- 天气 -->
-    <div id="weather"></div>
+    <div id="weather_div">
+      <div class="hotTitle">
+        高德天气
+      </div>
+      <div class="weather_box">
+        <!-- 左 -->
+        <div class="weather_box_left">
+          <span class="temperature">0</span><span>℃</span>
+        </div>
+        <!-- 右 -->
+        <div class="weather_box_right">
+          <!-- 右第一行 -->
+          <div>
+            <span class="weather">天气现象</span>丨
+            <span class="winddirection">风向描述</span>风丨
+            <span class="windpower">风力级别，单位：级</span> 级
+          </div>
+          <!-- 右第二行  -->
+          <div>
+            湿度<span class="humidity">空气湿度</span>%
+          </div>
+          <!-- 右第三行 -->
+          <div class="">
+            更新时间：<span class="reporttime">数据发布的时间</span>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+  </div>
 
 </body>
 <script src="./index.js"></script>
