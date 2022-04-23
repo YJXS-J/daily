@@ -200,7 +200,7 @@ function exchangeRate2(fromCode, toCode, value) {
                 // 1.5秒后消失
                 setTimeout(function () {
                     $('.currencLoading').fadeOut();
-                }, 15000);
+                }, 1500);
                 // console.log('当前访问用户较多，请稍后再试');
             }
         },
