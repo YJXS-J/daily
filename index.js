@@ -1,5 +1,7 @@
 // 全局变量
-var globalH; // 小时
+var globalH; // 时
+var globalM; // 分
+var globalS; // 秒
 var globaltemperature; // 温度
 var globalweather; // 今天天气
 var globalwinddirection; // 风向
@@ -12,6 +14,7 @@ var globaldaytemp; //白天温度
 var globaldaywind; //白天风向
 var globaldaypower; //白天风力
 var globalJPYcurrency; //日元汇率
+var JPYcurrencyEmailStatus = true; //日元汇率邮件状态
 
 // 获取腾讯时间
 function tencentTime() {
@@ -40,7 +43,35 @@ function getTime(time) {
     var m = ('0' + date.getMinutes()).slice(-2);
     var s = ('0' + date.getSeconds()).slice(-2);
     globalH = h;
+    globalM = m;
+    globalS = s;
     var w = date.getDay();
+
+    var timeEmail = globalH + ':' + globalM + ':' + globalS;
+
+    // 刷新日区汇率邮件可发送状态
+    if (timeEmail == '00:00:00') {
+        JPYcurrencyEmailStatus = true;
+    }
+
+    // 天气邮件（今天）发送时间每天早上7点
+    if (timeEmail == '07:00:00') {
+        weatherFn(cityCode);
+        sendEmail(
+            '今日天气信息',
+            `今天天气：${globalweather}，温度：${globaltemperature}℃，风向：${globalwinddirection}，风力：${globalwindpower}，湿度：${globalhumidity}，更新时间：${globalreporttime}`
+        );
+    }
+
+    // 天气邮件（明天）发送时间每天晚上8点
+    if (globalH + globalM + globalS == '200000') {
+        weatherAllFn(cityCode);
+        sendEmail(
+            '明日白天天气信息',
+            `明日白天天气：${globaldayweather}，温度：${globaldaytemp}℃，风向：${globaldaywind}，风力：${globaldaypower}`
+        );
+    }
+
     // 显示时间
     $('.year_box').text(Y);
     $('.month_box').text(M);
@@ -466,32 +497,8 @@ function sendEmail(title, msg) {
 
 //  日元汇率到一定值后发送邮件(15分钟检测一次)
 var JPYcurrencySet = setInterval(function () {
-    if (globalJPYcurrency >= 21) {
+    if (globalJPYcurrency >= 21 && JPYcurrencyEmailStatus) {
+        JPYcurrencyEmailStatus = false;
         sendEmail('日元汇率', '日元汇率已经到达1:' + globalJPYcurrency + '，请及时处理！');
-        clearTimeout(JPYcurrencySet);
     }
 }, 900000);
-
-// 天气邮件（今天）
-var weatherEmailToday = setInterval(() => {
-    if (globalH == '07') {
-        weatherFn(cityCode);
-        sendEmail(
-            '今日天气信息',
-            `今天天气：${globalweather}，温度：${globaltemperature}℃，风向：${globalwinddirection}，风力：${globalwindpower}，湿度：${globalhumidity}，更新时间：${globalreporttime}`
-        );
-        clearTimeout(weatherEmailToday);
-    }
-}, 10000);
-
-// 天气邮件（明天）
-var weatherEmailTomorrow = setInterval(() => {
-    if (globalH == '20') {
-        weatherAllFn(cityCode);
-        sendEmail(
-            '明日白天天气信息',
-            `明日白天天气：${globaldayweather}，温度：${globaldaytemp}℃，风向：${globaldaywind}，风力：${globaldaypower}`
-        );
-        clearTimeout(weatherEmailTomorrow);
-    }
-}, 10000);
