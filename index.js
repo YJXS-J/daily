@@ -25,6 +25,9 @@ function tencentTime() {
     });
 }
 
+// 初始化时间
+tencentTime();
+
 // 时间戳处理
 function getTime(time) {
     //时间戳为10位需*1000，时间戳为13位的话不需乘1000
@@ -215,9 +218,6 @@ function exchangeRate2(fromCode, toCode, value) {
         },
     });
 }
-
-// 初始化时间
-tencentTime();
 
 // 初始化货币转换
 defaultCurrencyConversion();
@@ -417,30 +417,6 @@ function weatherFn(cityCode) {
 }
 weatherFn(cityCode);
 
-// 天气邮件（今天）
-var weatherEmailToday = setInterval(() => {
-    if (globalH == '07') {
-        weatherFn(cityCode);
-        sendEmail(
-            '今日天气信息',
-            `今天天气：${globalweather}，温度：${globaltemperature}℃，风向：${globalwinddirection}，风力：${globalwindpower}，湿度：${globalhumidity}，更新时间：${globalreporttime}`
-        );
-        clearTimeout(weatherEmailToday);
-    }
-}, 10000);
-
-// 天气邮件（明天）
-var weatherEmailTomorrow = setInterval(() => {
-    if (globalH == '20') {
-        weatherAllFn(cityCode);
-        sendEmail(
-            '明日白天天气信息',
-            `明日白天天气：${globalweather}，温度：${globaltemperature}℃，风向：${globalwinddirection}，风力：${globalwindpower}`
-        );
-        clearTimeout(weatherEmailTomorrow);
-    }
-}, 10000);
-
 // 明日天气
 function weatherAllFn(cityCode) {
     var key = '3c63ae331c3c5b812a328d3b6fb26a4c';
@@ -475,10 +451,36 @@ function weatherAllFn(cityCode) {
 }
 weatherAllFn(cityCode);
 
-// 发送邮件
+// 天气邮件（今天）
+var weatherEmailToday = setInterval(() => {
+    if (globalH == '07') {
+        weatherFn(cityCode);
+        sendEmail(
+            '今日天气信息',
+            `今天天气：${globalweather}，温度：${globaltemperature}℃，风向：${globalwinddirection}，风力：${globalwindpower}，湿度：${globalhumidity}，更新时间：${globalreporttime}`
+        );
+        clearTimeout(weatherEmailToday);
+    }
+}, 10000);
+
+// 天气邮件（明天）
+var weatherEmailTomorrow = setInterval(() => {
+    if (globalH == '20') {
+        weatherAllFn(cityCode);
+        sendEmail(
+            '明日白天天气信息',
+            `明日白天天气：${globaldayweather}，温度：${globaldaytemp}℃，风向：${globaldaywind}，风力：${globaldaypower}`
+        );
+        clearTimeout(weatherEmailTomorrow);
+    }
+}, 10000);
+
+// 初始化EmailJS
 (function () {
     emailjs.init('ePaLzW855uk89BTeb');
 })();
+
+// 邮件模板
 var msg = '';
 function sendEmail(title, msg) {
     var templateParams = {
