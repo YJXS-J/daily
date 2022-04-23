@@ -11,6 +11,7 @@ var globaldayweather; //白天天气现象
 var globaldaytemp; //白天温度
 var globaldaywind; //白天风向
 var globaldaypower; //白天风力
+var globalJPYcurrency; //日元汇率
 
 // 获取腾讯时间
 function tencentTime() {
@@ -48,19 +49,7 @@ function getTime(time) {
     $('.minute_box').html(m);
     $('.seconds_box').html(s);
     $('.week_box').html(
-        w == 1
-            ? '一'
-            : w == 2
-            ? '二'
-            : w == 3
-            ? '三'
-            : w == 4
-            ? '四'
-            : w == 5
-            ? '五'
-            : w == 6
-            ? '六'
-            : '日'
+        w == 1 ? '一' : w == 2 ? '二' : w == 3 ? '三' : w == 4 ? '四' : w == 5 ? '五' : w == 6 ? '六' : '日'
     );
     var someTime =
         h >= 23 || h < 1
@@ -121,12 +110,7 @@ setInterval(function () {
 function exchangeRate(fromCode, toCode) {
     $.ajax({
         type: 'GET',
-        url:
-            'https://api.it120.cc/gooking/forex/rate?fromCode=' +
-            fromCode +
-            '&toCode=' +
-            toCode +
-            '',
+        url: 'https://api.it120.cc/gooking/forex/rate?fromCode=' + fromCode + '&toCode=' + toCode + '',
         dataType: 'json',
         success: function (data) {
             if (data.data) {
@@ -137,6 +121,7 @@ function exchangeRate(fromCode, toCode) {
                     $('.hkd').html(data.data.rate);
                 } else {
                     $('.jpy').html(data.data.rate);
+                    globalJPYcurrency = data.data.rate;
                 }
             }
         },
@@ -174,6 +159,8 @@ function currency_convert() {
     if ($('#currency_sel_1').val() == $('#currency_sel_2').val()) {
         return;
     }
+    $('.currencLoading').html('转换中...');
+    $('.currencLoading').show();
     // 获取输入框的值
     var currency_value = $('#currency_value').val();
     // 获取下拉框的值
@@ -195,24 +182,25 @@ function exchangeRate2(fromCode, toCode, value) {
         dataType: 'json',
         success: function (data) {
             if (data.data) {
+                $('.currencLoading').hide();
                 // 汇率计算
                 $('.currencyValue2').html(toCode.slice(0, -3));
                 $('.currencyValue4').html(fromCode.slice(0, -3));
                 $('.currencyValue1').html(value);
-                $('.currencyValue3').html(
-                    (data.data.rate * Number($('#currency_value').val())).toFixed(4)
-                );
+                $('.currencyValue3').html((data.data.rate * Number($('#currency_value').val())).toFixed(4));
 
                 $('.currencyValue8').html(toCode.slice(0, -3));
                 $('.currencyValue6').html(fromCode.slice(0, -3));
                 $('.currencyValue5').html(value);
                 $('.currencyValue7').html(
-                    (
-                        (data.data.fromCode / data.data.toCode) *
-                        Number($('#currency_value').val())
-                    ).toFixed(4)
+                    ((data.data.fromCode / data.data.toCode) * Number($('#currency_value').val())).toFixed(4)
                 );
             } else {
+                $('.currencLoading').html('汇率获取失败，请稍后重试');
+                // 1.5秒后消失
+                setTimeout(function () {
+                    $('.currencLoading').fadeOut();
+                }, 15000);
                 // console.log('当前访问用户较多，请稍后再试');
             }
         },
@@ -331,8 +319,7 @@ function currency_echarts(fromCode, seriesName) {
     function currency_echarts_now() {
         $.ajax({
             type: 'GET',
-            url:
-                'https://api.it120.cc/gooking/forex/rate?fromCode=' + fromCode + '&toCode=CNY' + '',
+            url: 'https://api.it120.cc/gooking/forex/rate?fromCode=' + fromCode + '&toCode=CNY' + '',
             dataType: 'json',
             success: function (data) {
                 if (data.data) {
@@ -432,12 +419,7 @@ function weatherAllFn(cityCode) {
     $.ajax({
         // 获取时间(腾讯)
         type: 'GET',
-        url:
-            'https://restapi.amap.com/v3/weather/weatherInfo?key=' +
-            key +
-            '&city=' +
-            cityCode +
-            '&extensions=all',
+        url: 'https://restapi.amap.com/v3/weather/weatherInfo?key=' + key + '&city=' + cityCode + '&extensions=all',
         dataType: 'JSON',
         success: function (data) {
             var weatherT = data.forecasts[0].casts[1];
@@ -459,6 +441,36 @@ function weatherAllFn(cityCode) {
     });
 }
 weatherAllFn(cityCode);
+
+// 初始化EmailJS
+(function () {
+    emailjs.init('ePaLzW855uk89BTeb');
+})();
+
+// 邮件模板
+var msg = '';
+function sendEmail(title, msg) {
+    var templateParams = {
+        title: title,
+        msg: msg,
+    };
+    emailjs.send('service_tejlxpc', 'template_aj1y406', templateParams).then(
+        function (response) {
+            console.log('SUCCESS!', response.status, response.text);
+        },
+        function (error) {
+            console.log('FAILED...', error);
+        }
+    );
+}
+
+//  日元汇率到一定值后发送邮件(15分钟检测一次)
+var JPYcurrencySet = setInterval(function () {
+    if (globalJPYcurrency >= 21) {
+        sendEmail('日元汇率', '日元汇率已经到达1:' + globalJPYcurrency + '，请及时处理！');
+        clearTimeout(JPYcurrencySet);
+    }
+}, 900000);
 
 // 天气邮件（今天）
 var weatherEmailToday = setInterval(() => {
@@ -483,25 +495,3 @@ var weatherEmailTomorrow = setInterval(() => {
         clearTimeout(weatherEmailTomorrow);
     }
 }, 10000);
-
-// 初始化EmailJS
-(function () {
-    emailjs.init('ePaLzW855uk89BTeb');
-})();
-
-// 邮件模板
-var msg = '';
-function sendEmail(title, msg) {
-    var templateParams = {
-        title: title,
-        msg: msg,
-    };
-    emailjs.send('service_tejlxpc', 'template_aj1y406', templateParams).then(
-        function (response) {
-            console.log('SUCCESS!', response.status, response.text);
-        },
-        function (error) {
-            console.log('FAILED...', error);
-        }
-    );
-}

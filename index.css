@@ -123,6 +123,13 @@ body {
     margin-left: 1em;
 }
 
+.currencLoading {
+    color: red;
+    font-size: 0.5em;
+    margin-left: 1em;
+    display: none;
+}
+
 .currencyImg {
     width: 4.8em;
 }
