@@ -347,67 +347,44 @@ function currency_echarts(fromCode, seriesName) {
     var seriesDataStatus = false;
 
     //  追加汇率数据
+    if (!globalJPYcurrency) {
+        var againGetCurrencySet = setInterval(function () {
+            currency_echarts_now();
+        }, 1000);
+    }
     function currency_echarts_now() {
-        $.ajax({
-            type: 'GET',
-            url: 'https://api.it120.cc/gooking/forex/rate?fromCode=' + fromCode + '&toCode=CNY' + '',
-            dataType: 'json',
-            success: function (data) {
-                if (data.data) {
-                    seriesDataStatus = true;
-                    // 汇率计算
-                    seriesData.push(data.data.rate);
-
-                    currencyChart.setOption({
-                        series: [
-                            {
-                                data: seriesData,
-                            },
-                        ],
-                    });
-                } else {
-                    seriesDataStatus = false;
-                }
-            },
-        });
-        if (seriesDataStatus) {
-            $.ajax({
-                // 获取时间(腾讯)
-                type: 'GET',
-                url: 'http://vv.video.qq.com/checktime?otype=json',
-                dataType: 'jsonp',
-                success: function (data) {
-                    // 成功后停止计时器
-                    clearTimeout(currency_echarts_timer);
-                    // 追加X轴数据
-                    var date = new Date(data.t * 1000);
-                    var h = ('0' + date.getHours()).slice(-2);
-                    var m = ('0' + date.getMinutes()).slice(-2);
-                    xAxisData.push(h + ':' + m);
-                    currencyChart.setOption({
-                        xAxis: [
-                            {
-                                data: xAxisData,
-                            },
-                        ],
-                    });
-                    currencyChart.hideLoading();
-                },
+        // 获取当前汇率
+        if (globalJPYcurrency) {
+            currencyChart.hideLoading();
+            seriesData.push(globalJPYcurrency);
+            currencyChart.setOption({
+                series: [
+                    {
+                        data: seriesData,
+                    },
+                ],
             });
+            xAxisData.push(globalH + ':' + globalM);
+            currencyChart.setOption({
+                xAxis: [
+                    {
+                        data: xAxisData,
+                    },
+                ],
+            });
+            console.log(1);
+            // 清除定时器
+            clearInterval(againGetCurrencySet);
         }
     }
-
-    // 请求数据处理
-    var currency_echarts_timer = setInterval(function () {
-        currency_echarts_now();
-    }, 1000);
 
     // 初始化汇率数据
     currency_echarts_now();
 
+    // 15分钟请求一次数据
     setInterval(() => {
         currency_echarts_now();
-    }, 60000);
+    }, 900000);
 }
 
 // echarts目标汇率转换
