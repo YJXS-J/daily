@@ -224,7 +224,6 @@ defaultCurrencyConversion();
 
 // 货币选项判断
 $('.currency_sel').change(function () {
-    console.log(1);
     if ($('#currency_sel_1').val() == $('#currency_sel_2').val()) {
         $('.tip').css('display', 'block');
     } else {
@@ -322,10 +321,13 @@ function currency_echarts(fromCode, seriesName) {
             },
         ],
     });
+
     // 计时器动态更新;
     var xAxisData = [];
     var seriesData = [];
     var seriesDataStatus = false;
+
+    //  追加汇率数据
     function currency_echarts_now() {
         $.ajax({
             type: 'GET',
@@ -357,7 +359,9 @@ function currency_echarts(fromCode, seriesName) {
                 url: 'http://vv.video.qq.com/checktime?otype=json',
                 dataType: 'jsonp',
                 success: function (data) {
+                    // 成功后停止计时器
                     clearTimeout(currency_echarts_timer);
+                    // 追加X轴数据
                     var date = new Date(data.t * 1000);
                     var h = ('0' + date.getHours()).slice(-2);
                     var m = ('0' + date.getMinutes()).slice(-2);
@@ -374,10 +378,15 @@ function currency_echarts(fromCode, seriesName) {
             });
         }
     }
+
+    // 请求数据处理
     var currency_echarts_timer = setInterval(function () {
         currency_echarts_now();
     }, 1000);
+
+    // 初始化汇率数据
     currency_echarts_now();
+
     setInterval(() => {
         currency_echarts_now();
     }, 60000);
