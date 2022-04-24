@@ -112,20 +112,20 @@ function getTime(time) {
 
     var period_box =
         h >= 0 && h < 3
-            ? '拂晓'
+            ? '拂  晓'
             : h >= 3 && h < 6
-            ? '黎明'
+            ? '黎  明'
             : h >= 6 && h < 9
-            ? '早晨'
+            ? '早  晨'
             : h >= 9 && h < 12
-            ? '上午'
+            ? '上  午'
             : h >= 12 && h < 15
-            ? '中午'
+            ? '中  午'
             : h >= 15 && h < 18
-            ? '下午'
+            ? '下  午'
             : h >= 18 && h < 21
-            ? '晚上'
-            : '夜晚';
+            ? '晚  上'
+            : '夜  晚';
     $('.period_box').html(period_box);
     if (h < 9 || h > 21) {
         $('.period_box').css('background', 'red');
