@@ -360,7 +360,6 @@ function currency_echarts(fromCode, seriesName) {
                 : fromCode.slice(-3) == 'USD'
                 ? globalUSDcurrency
                 : globalHKDcurrency;
-        console.log(currency);
         if (currency) {
             // 初始化追加数据
             currency_echarts_now();
