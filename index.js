@@ -14,6 +14,8 @@ var globaldaytemp; //白天温度
 var globaldaywind; //白天风向
 var globaldaypower; //白天风力
 var globalJPYcurrency; //日元汇率
+var globalUSDcurrency; // 美元汇率
+var globalUSDcurrency; // 港元汇率
 var JPYcurrencyEmailStatus = true; //日元汇率邮件状态
 
 // 获取腾讯时间
@@ -148,8 +150,10 @@ function exchangeRate(fromCode, toCode) {
                 // 实时汇率
                 if (fromCode == 'USD') {
                     $('.usd').html(data.data.rate);
+                    globalUSDcurrency = data.data.rate;
                 } else if (fromCode == 'HKD') {
                     $('.hkd').html(data.data.rate);
+                    globalHKDcurrency = data.data.rate;
                 } else {
                     $('.jpy').html(data.data.rate);
                     globalJPYcurrency = data.data.rate;
@@ -174,16 +178,6 @@ setInterval(function () {
         exchangeRate(fromCode[i], toCode);
     }
 }, 5000);
-
-// 默认汇率转换值接口
-function defaultCurrencyConversion() {
-    // 获取输入框的值
-    var currency_value = 1;
-    // 获取下拉框的值
-    var currency_sel_1 = '人民币CNY';
-    var currency_sel_2 = '美元USD';
-    exchangeRate2(currency_sel_2, currency_sel_1, currency_value);
-}
 
 // 点击转换货币
 function currency_convert() {
@@ -238,8 +232,26 @@ function exchangeRate2(fromCode, toCode, value) {
     });
 }
 
+// 默认汇率转换值接口
+function defaultCurrencyConversion() {
+    // 获取输入框的值
+    var currency_value = 1;
+    // 获取下拉框的值
+    var currency_sel_1 = '人民币CNY';
+    var currency_sel_2 = '美元USD';
+    exchangeRate2(currency_sel_2, currency_sel_1, currency_value);
+}
+
 // 初始化货币转换
 defaultCurrencyConversion();
+
+// 初始化默认汇率
+var setDef = setInterval(function () {
+    defaultCurrencyConversion();
+    if ($('.currencyValue1').html() != '0') {
+        clearInterval(setDef);
+    }
+}, 1000);
 
 // 货币选项判断
 $('.currency_sel').change(function () {
@@ -255,15 +267,9 @@ var currency_echarts_value1 = 'JPY';
 var currency_echarts_value2 = '日元';
 currency_echarts(currency_echarts_value1, currency_echarts_value2);
 
-// 初始化默认汇率
-var setDef = setInterval(function () {
-    defaultCurrencyConversion();
-    if ($('.currencyValue1').html() != '0') {
-        clearInterval(setDef);
-    }
-}, 1000);
-
 // 汇率Echarts
+var currency_echarts_timer1;
+var currency_echarts_timer2;
 function currency_echarts(fromCode, seriesName) {
     // 基于准备好的dom，初始化echarts实例
     var currency_echarts = document.getElementById('currency_echarts');
@@ -344,19 +350,29 @@ function currency_echarts(fromCode, seriesName) {
     // 计时器动态更新;
     var xAxisData = [];
     var seriesData = [];
-    var seriesDataStatus = false;
+    clearInterval(currency_echarts_timer2);
+
+    var currency;
+    var currency_echarts_timer1 = setInterval(function () {
+        currency =
+            fromCode.slice(-3) == 'JPY'
+                ? globalJPYcurrency
+                : fromCode.slice(-3) == 'USD'
+                ? globalUSDcurrency
+                : globalHKDcurrency;
+        console.log(currency);
+        if (currency) {
+            // 初始化追加数据
+            currency_echarts_now();
+            clearInterval(currency_echarts_timer1);
+        }
+    }, 1000);
 
     //  追加汇率数据
-    if (!globalJPYcurrency) {
-        var againGetCurrencySet = setInterval(function () {
-            currency_echarts_now();
-        }, 1000);
-    }
     function currency_echarts_now() {
-        // 获取当前汇率
-        if (globalJPYcurrency) {
-            currencyChart.hideLoading();
-            seriesData.push(globalJPYcurrency);
+        // 汇率
+        if (currency) {
+            seriesData.push(currency);
             currencyChart.setOption({
                 series: [
                     {
@@ -364,6 +380,7 @@ function currency_echarts(fromCode, seriesName) {
                     },
                 ],
             });
+            // 时间
             xAxisData.push(globalH + ':' + globalM);
             currencyChart.setOption({
                 xAxis: [
@@ -372,17 +389,12 @@ function currency_echarts(fromCode, seriesName) {
                     },
                 ],
             });
-            console.log(1);
-            // 清除定时器
-            clearInterval(againGetCurrencySet);
+            currencyChart.hideLoading();
         }
     }
 
-    // 初始化汇率数据
-    currency_echarts_now();
-
-    // 15分钟请求一次数据
-    setInterval(() => {
+    // 15分钟更新一次
+    currency_echarts_timer2 = setInterval(function () {
         currency_echarts_now();
     }, 900000);
 }
